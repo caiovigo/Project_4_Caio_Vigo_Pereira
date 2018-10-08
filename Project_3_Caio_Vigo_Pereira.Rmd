@@ -1,9 +1,10 @@
 ---
 title: "R Notebook"
 output:
-  pdf_document: default
   html_document:
+    keep_md: true
     df_print: paged
+  pdf_document: default
   word_document: default
 ---
 
@@ -45,14 +46,19 @@ typeof(spi_global_rankings_intl)
 str(spi_global_rankings_intl)
 ```
 
-```{r}
+Loading some packages
 
+```{r}
+library(stargazer)
+library(Amelia) # for missmap() function
 ```
 
+```{r}
+stargazer(spi_global_rankings_intl, type='text', align=TRUE, digits=2)
+```
 
 ```{r}
-library(stargazer) #to report regression results in Latex format
-stargazer(wage1, type='text', align=TRUE, digits=2)
+stargazer(spi_global_rankings_intl, type='text', align=TRUE, digits=2)
 ```
 
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.

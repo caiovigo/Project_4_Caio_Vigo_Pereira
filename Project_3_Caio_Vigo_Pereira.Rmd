@@ -19,6 +19,14 @@ spi_global_rankings_intl<-read.csv(paste(my_path,"/Datasets/spi_global_rankings_
 spi_global_rankings<-read.csv(paste(my_path,"/Datasets/spi_global_rankings.csv", sep=""),header=T)
 ```
 
+Information from the source:
+SPI Ratings
+This file contains links to the data behind our Club Soccer Predictions and Global Club Soccer Rankings.
+spi_matches.csv contains match-by-match SPI ratings and forecasts back to 2016.
+spi_global_rankings.csv contains current SPI ratings and rankings for men's club teams.
+spi_global_rankings_intl.csv contains current SPI ratings and rankings for men's international teams.
+
+
 Now I will analyze my 3 datasets.
 
 ```{r}

@@ -1,0 +1,117 @@
+---
+title: "Major Leagues - Caio Vigo Pereira"
+output:
+  html_document:
+    keep_md: true
+    df_print: paged
+---
+
+Loading the data.
+I choose to analyze the soccer datasets.
+
+```{r}
+my_path<-"C:/Users/Caio Laptop/OneDrive - The University of Kansas/Documents/PhD/11. Courses/19. EECS 731 - Introduction to Data Science/Homework/Section 6 - HW"
+setwd(my_path)
+
+spi_matches<-read.csv(paste(my_path,"/Datasets/spi_matches.csv", sep=""),header=T)
+spi_global_rankings_intl<-read.csv(paste(my_path,"/Datasets/spi_global_rankings_intl.csv", sep=""),header=T)
+spi_global_rankings<-read.csv(paste(my_path,"/Datasets/spi_global_rankings.csv", sep=""),header=T)
+```
+
+Information from the source:
+SPI Ratings
+This file contains links to the data behind our Club Soccer Predictions and Global Club Soccer Rankings.
+spi_matches.csv contains match-by-match SPI ratings and forecasts back to 2016.
+spi_global_rankings.csv contains current SPI ratings and rankings for men's club teams.
+spi_global_rankings_intl.csv contains current SPI ratings and rankings for men's international teams.
+
+
+Now I will analyze my 3 datasets.
+
+```{r}
+names(spi_matches)
+head(spi_matches)
+dim(spi_matches)
+typeof(spi_matches)
+str(spi_matches)
+```
+
+```{r}
+names(spi_global_rankings_intl)
+head(spi_global_rankings_intl)
+dim(spi_global_rankings_intl)
+typeof(spi_global_rankings_intl)
+str(spi_global_rankings_intl)
+```
+
+
+```{r}
+names(spi_global_rankings)
+head(spi_global_rankings)
+dim(spi_global_rankings)
+typeof(spi_global_rankings)
+str(spi_global_rankings)
+```
+
+##Loading some packages
+
+```{r}
+library(stargazer)
+library(Amelia) # for missmap() function
+```
+
+```{r}
+stargazer(spi_matches, type='text', align=TRUE, digits=2)
+```
+
+```{r}
+stargazer(spi_global_rankings, type='text', align=TRUE, digits=2)
+```
+
+```{r}
+stargazer(spi_global_rankings_intl, type='text', align=TRUE, digits=2)
+```
+
+#Checking for any NA's in the dataframe.
+
+```{r}
+missmap(spi_matches,col=c('yellow','black'),y.at=1,y.labels='',legend=TRUE)
+```
+
+```{r}
+missmap(spi_global_rankings,col=c('yellow','black'),y.at=1,y.labels='',legend=TRUE)
+```
+
+
+```{r}
+missmap(spi_global_rankings_intl,col=c('yellow','black'),y.at=1,y.labels='',legend=TRUE)
+```
+
+
+
+
+
+```{r}
+cor(spi_global_rankings_intl)
+```
+
+```{r}
+#set a seed 
+set.seed(999)
+
+#Split the data , `split()` assigns a booleans to a new column based on the SplitRatio specified. 
+
+split <- sample.split(housing,SplitRatio =0.75)
+
+
+train <- subset(housing,split==TRUE)
+test <- subset(housing,split==FALSE)
+```
+
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.

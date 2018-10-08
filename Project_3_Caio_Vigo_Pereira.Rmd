@@ -1,9 +1,11 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
 ---
-
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook.
 
 Loading the data.
 I choose to analyze the soccer datasets.
@@ -35,6 +37,15 @@ typeof(spi_global_rankings_intl)
 str(spi_global_rankings_intl)
 ```
 
+```{r}
+
+```
+
+
+```{r}
+library(stargazer) #to report regression results in Latex format
+stargazer(wage1, type='text', align=TRUE, digits=2)
+```
 
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
 

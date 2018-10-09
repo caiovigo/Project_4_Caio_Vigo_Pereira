@@ -1,0 +1,157 @@
+---
+title: "Major Leagues - Caio Vigo Pereira"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+    keep_md: yes
+---
+
+#Loading the data
+
+I choose to analyze the soccer datasets.
+
+```{r}
+my_path<-"C:/Users/Caio Laptop/OneDrive - The University of Kansas/Documents/PhD/11. Courses/19. EECS 731 - Introduction to Data Science/Homework/Section 6 - HW"
+setwd(my_path)
+
+spi_matches<-read.csv(paste(my_path,"/Datasets/spi_matches.csv", sep=""),header=T)
+spi_global_rankings_intl<-read.csv(paste(my_path,"/Datasets/spi_global_rankings_intl.csv", sep=""),header=T)
+spi_global_rankings<-read.csv(paste(my_path,"/Datasets/spi_global_rankings.csv", sep=""),header=T)
+```
+
+##Information from the source
+
+SPI Ratings
+This file contains links to the data behind our Club Soccer Predictions and Global Club Soccer Rankings.
+spi_matches.csv contains match-by-match SPI ratings and forecasts back to 2016.
+spi_global_rankings.csv contains current SPI ratings and rankings for men's club teams.
+spi_global_rankings_intl.csv contains current SPI ratings and rankings for men's international teams.
+
+
+#Analyzing my 3 datasets
+
+```{r}
+names(spi_matches)
+head(spi_matches)
+dim(spi_matches)
+typeof(spi_matches)
+str(spi_matches)
+```
+
+```{r}
+names(spi_global_rankings_intl)
+head(spi_global_rankings_intl)
+dim(spi_global_rankings_intl)
+typeof(spi_global_rankings_intl)
+str(spi_global_rankings_intl)
+```
+
+
+```{r}
+names(spi_global_rankings)
+head(spi_global_rankings)
+dim(spi_global_rankings)
+typeof(spi_global_rankings)
+str(spi_global_rankings)
+```
+
+##Loading some packages
+
+```{r}
+library(stargazer)
+library(Amelia) # for missmap() function
+```
+
+#Taking a look on the Descriptive Statistics
+
+```{r}
+stargazer(spi_matches, type='text', align=TRUE, digits=2)
+```
+
+```{r}
+stargazer(spi_global_rankings, type='text', align=TRUE, digits=2)
+```
+
+```{r}
+stargazer(spi_global_rankings_intl, type='text', align=TRUE, digits=2)
+```
+
+#Checking for any NA's in the dataframe.
+
+```{r}
+missmap(spi_matches,col=c('yellow','black'),y.at=1,y.labels='',legend=TRUE)
+```
+
+```{r}
+missmap(spi_global_rankings,col=c('yellow','black'),y.at=1,y.labels='',legend=TRUE)
+```
+
+
+```{r}
+missmap(spi_global_rankings_intl,col=c('yellow','black'),y.at=1,y.labels='',legend=TRUE)
+```
+
+
+## Replacing missing values with the mean
+```{r}
+spi_matches<-spi_matches[,6:22]
+for(i in 1:ncol(spi_matches)){
+  spi_matches[is.na(spi_matches[,i]), i] <- mean(spi_matches[,i], na.rm = TRUE)
+}
+```
+
+## Checking if there is any missing value after the changes
+```{r}
+missmap(spi_matches,col=c('yellow','black'),y.at=1,y.labels='',legend=TRUE)
+```
+
+```{r}
+#set a seed 
+set.seed(999)
+
+library(caTools)
+#Split the data , `split()` assigns a booleans to a new column based on the SplitRatio specified. 
+
+split <- sample.split(spi_matches,SplitRatio =0.75)
+
+
+train <- subset(spi_matches,split==TRUE)
+test <- subset(spi_matches,split==FALSE)
+```
+
+```{r}
+team_1_model <- lm(score1 ~ proj_score1 + importance1 + xg1 + nsxg1 + spi1 + prob1, data=train)
+team_2_model <- lm(score2 ~ proj_score2 + importance2 + xg2 + nsxg2 + spi2 + prob2, data=train)
+# summary(team_1_model)
+# summary(team_2_model)
+stargazer(team_1_model, type='text', align=TRUE, digits=2)
+stargazer(team_2_model, type='text', align=TRUE, digits=2)
+```
+
+```{r}
+# test$predicted.medv <- predict(team_1_model,test)
+# test<- na.omit(test$predicted.medv)
+```
+
+#Predictions plots
+
+```{r}
+predict_team_1_model <- predict(team_1_model,test)
+predict_team_2_model <- na.omit(predict(team_2_model,test))
+
+plot(test$score1,predict(team_1_model,test))
+plot(test$score2,predict(team_2_model,test))
+```
+
+```{r}
+error <- test$score1-predict_team_1_model
+rmse <- sqrt(mean(error)^2)
+rmse
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
